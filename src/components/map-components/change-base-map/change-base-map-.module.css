@@ -1,0 +1,38 @@
+.container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: #ffffffdd;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.option input[type="radio"] {
+  accent-color: #1e90ff;
+  width: 16px;
+  height: 16px;
+}
+
+.option label {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
+}

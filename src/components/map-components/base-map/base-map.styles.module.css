@@ -1,0 +1,94 @@
+.container {
+  position: absolute;
+  bottom: 50px;
+  right: 10px;
+  display: flex;
+  gap: 12px;
+  background: #fff;
+  padding: 20px 20px 30px 20px; /* mais espaço nas laterais e embaixo */
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+/* Wrapper para botão + label */
+.buttonWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Botão */
+.button {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #222;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 28px;
+  color: white;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 0;
+}
+
+/* Movimento só do botão ao clicar */
+.button:active {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+  transform: translateY(3px);
+}
+
+/* Label fixo abaixo do botão */
+.label {
+  margin-top: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  user-select: none;
+  pointer-events: none;
+  text-align: center;
+  width: 100%;
+}
+
+/* Hover colors diferentes por botão */
+.btn-precipitation:hover {
+  border-color: #1E90FF;
+  box-shadow: 0 0 15px #1E90FF;
+}
+
+.btn-clouds:hover {
+  border-color: #8A2BE2;
+  box-shadow: 0 0 15px #8A2BE2;
+}
+
+.btn-temperature:hover {
+  border-color: #FF4500;
+  box-shadow: 0 0 15px #FF4500;
+}
+
+/* Estado ativo */
+.button.active.btn-precipitation {
+  border-color: #1E90FF;
+  box-shadow: 0 0 20px #1E90FF;
+  font-weight: 700;
+}
+
+.button.active.btn-clouds {
+  border-color: #8A2BE2;
+  box-shadow: 0 0 20px #8A2BE2;
+  font-weight: 700;
+}
+
+.button.active.btn-temperature {
+  border-color: #FF4500;
+  box-shadow: 0 0 20px #FF4500;
+  font-weight: 700;
+}
