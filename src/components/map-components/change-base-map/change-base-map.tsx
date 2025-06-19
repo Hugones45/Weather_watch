@@ -29,17 +29,18 @@ const ChangeBaseMap = ({ map, isReady, onStyleChange }: ChangeBaseMapProps) => {
         <div className={styles.container}>
             <div id="menu" className={styles.menu}>
                 <div className={styles.option}>
-                    <input id="standard-satellite" type="radio" name="rtoggle" defaultChecked />
+                    <input id="dark-v11" type="radio" name="rtoggle" defaultChecked />
+                    <label htmlFor="dark-v11">Dark</label>
+                </div>
+                <div className={styles.option}>
+                    <input id="standard-satellite" type="radio" name="rtoggle" />
                     <label htmlFor="standard-satellite">Satellite</label>
                 </div>
                 <div className={styles.option}>
                     <input id="light-v11" type="radio" name="rtoggle" />
                     <label htmlFor="light-v11">Light</label>
                 </div>
-                <div className={styles.option}>
-                    <input id="dark-v11" type="radio" name="rtoggle" />
-                    <label htmlFor="dark-v11">Dark</label>
-                </div>
+
                 <div className={styles.option}>
                     <input id="standard" type="radio" name="rtoggle" />
                     <label htmlFor="standard">Streets</label>
