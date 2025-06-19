@@ -11,10 +11,10 @@ import Winds from "../raster-layers/winds";
 type WeatherLayerType = 'temperature' | 'precipitation' | 'clouds' | 'winds' | null;
 
 const layerConfigs = {
-    temperature: { id: 'temp_layer', source: 'temp_source' },
+    temperature: { id: 'temp_layerdddd', source: 'temp_sourceddd' },
     precipitation: { id: 'precipitation_layer', source: 'precipitation_source' }, // <-- CORRIGIDO
-    clouds: { id: 'clouds_layer', source: 'clouds_source' },
-    winds: { id: 'winds_layer', source: 'winds_source' }
+    clouds: { id: 'clouds_layerddd', source: 'clouds_sourceddd' },
+    winds: { id: 'winds_layerddd', source: 'winds_sourcedddd' }
 };
 
 
