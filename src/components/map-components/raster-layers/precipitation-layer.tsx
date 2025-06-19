@@ -27,17 +27,16 @@ const PrecipitationLayer = ({ map, isReady }: PrecipitationLayerProps) => {
                 type: "raster",
                 source: keySource,
             })
+        }
 
-            return () => {
-                if (map.getLayer(keyLayer)) {
-                    map.removeLayer(keyLayer)
-                }
-
-                if (map.getSource(keySource)) {
-                    map.removeSource(keySource)
-                }
+        return () => {
+            if (map.getLayer(keyLayer)) {
+                map.removeLayer(keyLayer)
             }
 
+            if (map.getSource(keySource)) {
+                map.removeSource(keySource)
+            }
         }
 
     }, [map, isReady])
