@@ -13,7 +13,7 @@ type WeatherLayerType = 'temperature' | 'precipitation' | 'clouds' | 'winds' | n
 
 const layerConfigs = {
     temperature: { id: 'temp_layer', source: 'temp_source' },
-    precipitation: { id: 'precipitation_layers', source: 'precipitation_source' }, // <-- CORRIGIDO
+    precipitation: { id: 'precipitation_layer', source: 'precipitation_source' }, // <-- CORRIGIDO
     clouds: { id: 'clouds_layer', source: 'clouds_source' },
     winds: { id: 'winds_layer', source: 'winds_source' }
 };
