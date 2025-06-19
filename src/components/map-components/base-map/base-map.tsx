@@ -10,12 +10,14 @@ import Winds from "../raster-layers/winds";
 
 type WeatherLayerType = 'temperature' | 'precipitation' | 'clouds' | 'winds' | null;
 
+
 const layerConfigs = {
-    temperature: { id: 'temp_layerdddd', source: 'temp_sourceddd' },
-    precipitation: { id: 'precipitation_layerssss', source: 'precipitation_sourcesss' }, // <-- CORRIGIDO
-    clouds: { id: 'clouds_layerddd', source: 'clouds_sourceddd' },
-    winds: { id: 'winds_layerddd', source: 'winds_sourcedddd' }
+    temperature: { id: 'temp_layer', source: 'temp_source' },
+    precipitation: { id: 'precipitation_layers', source: 'precipitation_source' }, // <-- CORRIGIDO
+    clouds: { id: 'clouds_layer', source: 'clouds_source' },
+    winds: { id: 'winds_layer', source: 'winds_source' }
 };
+
 
 
 const BaseMap = () => {
@@ -56,26 +58,28 @@ const BaseMap = () => {
         };
     }, []);
 
-    // Remove todas as camadas ao trocar de estilo
     useEffect(() => {
-        if (!mapRef.current || !isReady) return;
+        if (!mapRef.current || !isReady || !styleChanged) return;
 
-        Object.values(layerConfigs).forEach(({ id, source }) => {
-            if (mapRef.current?.getLayer(id)) {
-                mapRef.current.removeLayer(id);
-            }
-            if (mapRef.current?.getSource(source)) {
-                mapRef.current.removeSource(source);
-            }
-        });
+        const map = mapRef.current;
 
-        // Se o estilo mudou, re-renderiza camada ativa
-        if (styleChanged && activeLayer) {
-            setTimeout(() => {
-                setStyleChanged(false); // reset
-            }, 0); // esperar DOM aplicar estilo
-        }
-    }, [activeLayer, isReady, styleChanged]);
+        // Aguarda um ciclo do event loop para garantir que o estilo foi totalmente aplicado
+        setTimeout(() => {
+            // Remove todas as camadas e fontes antigas
+            Object.values(layerConfigs).forEach(({ id, source }) => {
+                if (map.getLayer(id)) {
+                    map.removeLayer(id);
+                }
+                if (map.getSource(source)) {
+                    map.removeSource(source);
+                }
+            });
+
+            // Força re-renderizar a camada ativa
+            setStyleChanged(false);
+        }, 100); // dá tempo para o estilo aplicar totalmente (100ms costuma ser suficiente)
+    }, [styleChanged, isReady]);
+
 
     const renderLayer = () => {
         if (!isReady || !mapRef.current) return null;
