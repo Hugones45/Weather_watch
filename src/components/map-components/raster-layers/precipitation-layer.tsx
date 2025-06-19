@@ -11,8 +11,8 @@ const PrecipitationLayer = ({ map, isReady }: PrecipitationLayerProps) => {
 
         if (!map || !isReady) return
 
-        const keyLayer = "precipitation_layer"
-        const keySource = "precipitation_source"
+        const keyLayer = "precip_layer"
+        const keySource = "precip_source"
 
         if (!map.getSource(keySource)) {
 
