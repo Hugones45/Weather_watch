@@ -59,24 +59,23 @@ const BaseMap = () => {
     }, []);
 
     useEffect(() => {
-        if (!mapRef.current || !isReady) return;
+        if (!mapRef.current || !isReady || !styleChanged) return;
 
-        Object.values(layerConfigs).forEach(({ id, source }) => {
-            if (mapRef.current?.getLayer(id)) {
-                mapRef.current.removeLayer(id);
-            }
-            if (mapRef.current?.getSource(source)) {
-                mapRef.current.removeSource(source);
-            }
-        });
+        const map = mapRef.current;
 
-        // Se o estilo mudou, re-renderiza camada ativa
-        if (styleChanged && activeLayer) {
-            setTimeout(() => {
-                setStyleChanged(false); // reset
-            }, 0); // esperar DOM aplicar estilo
-        }
-    }, [activeLayer, isReady, styleChanged]);
+        setTimeout(() => {
+            Object.values(layerConfigs).forEach(({ id, source }) => {
+                if (map.getLayer(id)) {
+                    map.removeLayer(id);
+                }
+                if (map.getSource(source)) {
+                    map.removeSource(source);
+                }
+            });
+
+            setStyleChanged(false);
+        }, 100);
+    }, [styleChanged, isReady]);
 
 
     const renderLayer = () => {
