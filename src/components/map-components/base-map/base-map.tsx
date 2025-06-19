@@ -12,10 +12,11 @@ type WeatherLayerType = 'temperature' | 'precipitation' | 'clouds' | 'winds' | n
 
 const layerConfigs = {
     temperature: { id: 'temp_layer', source: 'temp_source' },
-    precipitation: { id: 'precip_layer', source: 'precip_source' },
+    precipitation: { id: 'precipitation_layer', source: 'precipitation_source' },
     clouds: { id: 'clouds_layer', source: 'clouds_source' },
     winds: { id: 'winds_layer', source: 'winds_source' }
 };
+
 
 const BaseMap = () => {
     const mapContainerRef = useRef<HTMLDivElement>(null);
