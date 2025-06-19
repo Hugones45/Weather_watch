@@ -4,26 +4,25 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import TemperatureLayer from "../raster-layers/temperature-layer";
 import PrecipitationLayer from "../raster-layers/precipitation-layer";
 import CloudsLayer from "../raster-layers/clouds-layer";
+import Winds from "../raster-layers/winds";
 import styles from "./base-map.styles.module.css";
 import ChangeBaseMap from "../change-base-map/change-base-map";
-import Winds from "../raster-layers/winds";
 
 type WeatherLayerType = 'temperature' | 'precipitation' | 'clouds' | 'winds' | null;
 
 const layerConfigs = {
-    temperature: { id: 'temp_layerdddd', source: 'temp_sourceddd' },
-    precipitation: { id: 'precipitation_layer', source: 'precipitation_source' }, // <-- CORRIGIDO
-    clouds: { id: 'clouds_layerddd', source: 'clouds_sourceddd' },
-    winds: { id: 'winds_layerddd', source: 'winds_sourcedddd' }
+    temperature: { id: 'temp_layer', source: 'temp_source' },
+    precipitation: { id: 'precipitation_layer', source: 'precipitation_source' },
+    clouds: { id: 'clouds_layer', source: 'clouds_source' },
+    winds: { id: 'winds_layer', source: 'winds_source' }
 };
-
 
 const BaseMap = () => {
     const mapContainerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<mapboxgl.Map | null>(null);
     const [isReady, setIsReady] = useState(false);
     const [activeLayer, setActiveLayer] = useState<WeatherLayerType>(null);
-    const [styleChanged, setStyleChanged] = useState(false); // <-- novo
+    const [styleChanged, setStyleChanged] = useState(false);
 
     useEffect(() => {
         if (!mapContainerRef.current) return;
@@ -43,11 +42,8 @@ const BaseMap = () => {
             setIsReady(true);
         });
 
-        // Detecta troca de estilo base
         map.on('styledata', () => {
-            if (isReady) {
-                setStyleChanged(true);
-            }
+            if (isReady) setStyleChanged(true);
         });
 
         return () => {
@@ -56,7 +52,6 @@ const BaseMap = () => {
         };
     }, []);
 
-    // Remove todas as camadas ao trocar de estilo
     useEffect(() => {
         if (!mapRef.current || !isReady) return;
 
@@ -69,11 +64,10 @@ const BaseMap = () => {
             }
         });
 
-        // Se o estilo mudou, re-renderiza camada ativa
         if (styleChanged && activeLayer) {
             setTimeout(() => {
-                setStyleChanged(false); // reset
-            }, 0); // esperar DOM aplicar estilo
+                setStyleChanged(false);
+            }, 0);
         }
     }, [activeLayer, isReady, styleChanged]);
 
@@ -88,11 +82,14 @@ const BaseMap = () => {
             case 'clouds':
                 return <CloudsLayer map={mapRef.current} isReady={isReady} />;
             case 'winds':
-                return <Winds map={mapRef.current} isReady={isReady} />
+                return <Winds map={mapRef.current} isReady={isReady} />;
             default:
                 return null;
         }
     };
+
+    // Array filtrado para evitar o null e corrigir erro do TypeScript
+    const availableLayers: Exclude<WeatherLayerType, null>[] = ['temperature', 'precipitation', 'clouds', 'winds'];
 
     return (
         <>
@@ -102,49 +99,27 @@ const BaseMap = () => {
                 <ChangeBaseMap
                     map={mapRef.current}
                     isReady={isReady}
-                    onStyleChange={() => {
-                        setActiveLayer(null); // limpa visual + camada
-                    }}
+                    onStyleChange={() => setActiveLayer(null)}
                 />
             )}
 
             <div className={styles.container}>
-                <div className={styles.buttonWrapper}>
-                    <button
-                        className={`${styles.button} ${activeLayer === 'temperature' ? styles.active : ''} ${styles['btn-temperature']}`}
-                        onClick={() => setActiveLayer('temperature')}
-                    >
-                        🌡️
-                    </button>
-                    <span className={styles.label}>Temperature</span>
-                </div>
-                <div className={styles.buttonWrapper}>
-                    <button
-                        className={`${styles.button} ${activeLayer === 'precipitation' ? styles.active : ''} ${styles['btn-precipitation']}`}
-                        onClick={() => setActiveLayer('precipitation')}
-                    >
-                        💧
-                    </button>
-                    <span className={styles.label}>Radar</span>
-                </div>
-                <div className={styles.buttonWrapper}>
-                    <button
-                        className={`${styles.button} ${activeLayer === 'clouds' ? styles.active : ''} ${styles['btn-clouds']}`}
-                        onClick={() => setActiveLayer('clouds')}
-                    >
-                        ☁️
-                    </button>
-                    <span className={styles.label}>Clouds</span>
-                </div>
-                <div className={styles.buttonWrapper}>
-                    <button
-                        className={`${styles.button} ${activeLayer === 'winds' ? styles.active : ''} ${styles['btn-winds']}`}
-                        onClick={() => setActiveLayer('winds')}
-                    >
-                        🌬️
-                    </button>
-                    <span className={styles.label}>Winds</span>
-                </div>
+                {availableLayers.map((layer) => (
+                    <div key={layer} className={styles.buttonWrapper}>
+                        <button
+                            className={`${styles.button} ${activeLayer === layer ? styles.active : ''} ${styles['btn-' + layer]}`}
+                            onClick={() => setActiveLayer(layer)}
+                        >
+                            {layer === 'temperature' && '🌡️'}
+                            {layer === 'precipitation' && '💧'}
+                            {layer === 'clouds' && '☁️'}
+                            {layer === 'winds' && '🌬️'}
+                        </button>
+                        <span className={styles.label}>
+                            {layer.charAt(0).toUpperCase() + layer.slice(1)}
+                        </span>
+                    </div>
+                ))}
             </div>
 
             {renderLayer()}
