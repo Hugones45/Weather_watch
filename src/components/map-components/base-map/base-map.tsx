@@ -63,9 +63,7 @@ const BaseMap = () => {
 
         const map = mapRef.current;
 
-        // Aguarda um ciclo do event loop para garantir que o estilo foi totalmente aplicado
         setTimeout(() => {
-            // Remove todas as camadas e fontes antigas
             Object.values(layerConfigs).forEach(({ id, source }) => {
                 if (map.getLayer(id)) {
                     map.removeLayer(id);
@@ -75,9 +73,8 @@ const BaseMap = () => {
                 }
             });
 
-            // Força re-renderizar a camada ativa
             setStyleChanged(false);
-        }, 100); // dá tempo para o estilo aplicar totalmente (100ms costuma ser suficiente)
+        }, 100);
     }, [styleChanged, isReady]);
 
 
