@@ -10,23 +10,15 @@ import Winds from "../raster-layers/winds";
 
 type WeatherLayerType = 'temperature' | 'precipitation' | 'clouds' | 'winds' | null;
 
-
-const layerConfigs = {
-    temperature: { id: 'temp_layer', source: 'temp_source' },
-    precipitation: { id: 'precipitation_layer', source: 'precipitation_source' }, // <-- CORRIGIDO
-    clouds: { id: 'clouds_layer', source: 'clouds_source' },
-    winds: { id: 'winds_layer', source: 'winds_source' }
-};
-
-
-
 const BaseMap = () => {
     const mapContainerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<mapboxgl.Map | null>(null);
+
     const [isReady, setIsReady] = useState(false);
     const [activeLayer, setActiveLayer] = useState<WeatherLayerType>(null);
-    const [styleChanged, setStyleChanged] = useState(false); // <-- novo
+    const [baseStyle, setBaseStyle] = useState('mapbox://styles/mapbox/dark-v11');
 
+    // Initialize map once
     useEffect(() => {
         if (!mapContainerRef.current) return;
 
@@ -34,7 +26,7 @@ const BaseMap = () => {
             container: mapContainerRef.current,
             center: [-46.940186, -19.582844],
             zoom: 4,
-            style: 'mapbox://styles/mapbox/dark-v11',
+            style: baseStyle,
             accessToken: import.meta.env.VITE_MAPBOX_TOKEN,
             projection: 'mercator',
         });
@@ -45,38 +37,18 @@ const BaseMap = () => {
             setIsReady(true);
         });
 
-        // Detecta troca de estilo base
-        map.on('styledata', () => {
-            if (isReady) {
-                setStyleChanged(true);
-            }
-        });
-
         return () => {
-            mapRef.current?.remove();
+            map.remove();
             mapRef.current = null;
         };
     }, []);
 
     useEffect(() => {
-        if (!mapRef.current || !isReady || !styleChanged) return;
-
-        const map = mapRef.current;
-
-        setTimeout(() => {
-            Object.values(layerConfigs).forEach(({ id, source }) => {
-                if (map.getLayer(id)) {
-                    map.removeLayer(id);
-                }
-                if (map.getSource(source)) {
-                    map.removeSource(source);
-                }
-            });
-
-            setStyleChanged(false);
-        }, 100);
-    }, [styleChanged, isReady]);
-
+        if (mapRef.current && isReady) {
+            mapRef.current.setStyle(baseStyle);
+            setActiveLayer(null);
+        }
+    }, [baseStyle, isReady]);
 
     const renderLayer = () => {
         if (!isReady || !mapRef.current) return null;
@@ -89,7 +61,7 @@ const BaseMap = () => {
             case 'clouds':
                 return <CloudsLayer map={mapRef.current} isReady={isReady} />;
             case 'winds':
-                return <Winds map={mapRef.current} isReady={isReady} />
+                return <Winds map={mapRef.current} isReady={isReady} />;
             default:
                 return null;
         }
@@ -103,8 +75,9 @@ const BaseMap = () => {
                 <ChangeBaseMap
                     map={mapRef.current}
                     isReady={isReady}
-                    onStyleChange={() => {
-                        setActiveLayer(null); // limpa visual + camada
+                    onStyleChange={(newStyleUrl: string) => {
+                        setBaseStyle(newStyleUrl);
+                        setActiveLayer(null);
                     }}
                 />
             )}

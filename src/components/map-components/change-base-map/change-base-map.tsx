@@ -1,54 +1,44 @@
-import { useEffect } from "react";
+import React from "react";
 import styles from "./change-base-map-.module.css";
 
-type ChangeBaseMapProps = {
+export type ChangeBaseMapProps = {
     map: mapboxgl.Map;
     isReady: boolean;
-    onStyleChange: () => void;
+    onStyleChange: (newStyleUrl: string) => void; // recebe a URL do novo estilo
 };
 
-const ChangeBaseMap = ({ map, isReady, onStyleChange }: ChangeBaseMapProps) => {
-    useEffect(() => {
-        if (!map || !isReady) return;
+const styleOptions = [
+    { id: "dark-v11", label: "Dark" },
+    { id: "satellite-streets-v12", label: "Satellite" },
+    { id: "light-v10", label: "Light" },
+    { id: "streets-v12", label: "Streets" },
+    { id: "outdoors-v12", label: "Outdoors" },
+];
 
-        const layerList = document.getElementById("menu");
-        if (!layerList) return;
+const ChangeBaseMap = ({ isReady, onStyleChange }: ChangeBaseMapProps) => {
+    if (!isReady) return null;
 
-        const inputs = layerList.getElementsByTagName("input");
-
-        for (const input of inputs) {
-            input.onclick = (event: any) => {
-                const layerId = event.target.id;
-                map.setStyle("mapbox://styles/mapbox/" + layerId);
-                onStyleChange(); // limpa a camada ativa
-            };
-        }
-    }, [map, isReady, onStyleChange]);
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const styleId = event.target.id;
+        const styleUrl = `mapbox://styles/mapbox/${styleId}`;
+        onStyleChange(styleUrl);
+    };
 
     return (
         <div className={styles.container}>
             <div id="menu" className={styles.menu}>
-                <div className={styles.option}>
-                    <input id="dark-v11" type="radio" name="rtoggle" defaultChecked />
-                    <label htmlFor="dark-v11">Dark</label>
-                </div>
-                <div className={styles.option}>
-                    <input id="standard-satellite" type="radio" name="rtoggle" />
-                    <label htmlFor="standard-satellite">Satellite</label>
-                </div>
-                <div className={styles.option}>
-                    <input id="light-v11" type="radio" name="rtoggle" />
-                    <label htmlFor="light-v11">Light</label>
-                </div>
-
-                <div className={styles.option}>
-                    <input id="standard" type="radio" name="rtoggle" />
-                    <label htmlFor="standard">Streets</label>
-                </div>
-                <div className={styles.option}>
-                    <input id="outdoors-v12" type="radio" name="rtoggle" />
-                    <label htmlFor="outdoors-v12">Outdoors</label>
-                </div>
+                {styleOptions.map(({ id, label }, index) => (
+                    <div key={id} className={styles.option}>
+                        <input
+                            id={id}
+                            type="radio"
+                            name="rtoggle"
+                            onChange={handleChange}
+                            defaultChecked={index === 0} // primeira opção checada
+                        />
+                        <label htmlFor={id}>{label}</label>
+                    </div>
+                ))}
             </div>
         </div>
     );
